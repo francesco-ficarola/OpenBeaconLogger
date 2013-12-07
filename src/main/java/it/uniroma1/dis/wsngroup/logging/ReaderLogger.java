@@ -130,7 +130,12 @@ public class ReaderLogger {
 							}
 						}
 						
-						String msg = "C t=" + currentTimestamp + " ip=" + Integer.toHexString(eReaderID) + " id=" + Integer.toHexString(id) + " boot_count=0" + " seq=" + Integer.toHexString(short_seq) + neighbors_str;
+						String msg = "";
+						if(idInHex) {
+							msg = "C t=" + currentTimestamp + " ip=" + Integer.toHexString(eReaderID) + " id=" + Integer.toHexString(id) + " boot_count=0" + " seq=" + Integer.toHexString(short_seq) + neighbors_str;
+						} else {
+							msg = "C t=" + currentTimestamp + " ip=" + Integer.toHexString(eReaderID) + " id=" + id + " boot_count=0" + " seq=" + Integer.toHexString(short_seq) + neighbors_str;
+						}
 						LogInteraction.write(msg);
 						logger.info("[Contact Message] proto: " + proto + ", id: " + id + ", seq: " + short_seq + ", neighbors: " + neighbors_str + ", crc: " + crc);
 					}
