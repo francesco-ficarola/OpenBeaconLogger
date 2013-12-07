@@ -4,7 +4,6 @@ import it.uniroma1.dis.wsngroup.utils.Constants;
 import it.uniroma1.dis.wsngroup.utils.Functions;
 import it.uniroma1.dis.wsngroup.utils.XXTEA;
 
-import java.awt.HeadlessException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -111,7 +110,29 @@ public class ReaderLogger {
 					
 					/** Contact Message (TBeaconProx) */
 					if(proto == 69) {
+						int neighbor1 = Functions.byteArraytoInt(new byte[] {0, 0, decryptedPayload[4], decryptedPayload[5]});
+						int neighbor2 = Functions.byteArraytoInt(new byte[] {0, 0, decryptedPayload[6], decryptedPayload[7]});
+						int neighbor3 = Functions.byteArraytoInt(new byte[] {0, 0, decryptedPayload[8], decryptedPayload[9]});
+						int neighbor4 = Functions.byteArraytoInt(new byte[] {0, 0, decryptedPayload[10], decryptedPayload[11]});
+						int short_seq = Functions.byteArraytoInt(new byte[] {0, 0, decryptedPayload[12], decryptedPayload[13]});
 						
+						int neighbors[] = {neighbor1, neighbor2, neighbor3, neighbor4};
+						String neighbors_str = "";
+						for (int neighbor : neighbors) {
+							if(neighbor != 0) {
+								String neighbor_id_str = String.valueOf(neighbor & 0x0FFF);
+								if(idInHex) {
+									neighbor_id_str = Integer.toHexString(neighbor & 0x0FFF);
+								}
+								int seen_power = neighbor >> 14;
+								int seen_cnt = (neighbor >> 12) & 0x03;
+								neighbors_str += "[" + neighbor_id_str + "(" + seen_power + ")" + " #" + seen_cnt + "] ";
+							}
+						}
+						
+						String msg = "C t=" + currentTimestamp + " ip=" + Integer.toHexString(eReaderID) + " id=" + Integer.toHexString(id) + " boot_count=0" + " seq=" + Integer.toHexString(short_seq) + neighbors_str;
+						LogInteraction.write(msg);
+						logger.info("[Contact Message] proto: " + proto + ", id: " + id + ", seq: " + short_seq + ", neighbors: " + neighbors_str + ", crc: " + crc);
 					}
 					
 				} else {
