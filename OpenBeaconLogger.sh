@@ -4,4 +4,4 @@ if [ ! -d "OpenBeaconLogger" ]; then
 	tar -xzf OpenBeaconLogger.tar.gz
 fi
 cd OpenBeaconLogger/
-./startup.sh
+./startup.sh $1
